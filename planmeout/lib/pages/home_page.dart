@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planmeout/util/dialog_box.dart';
 import 'package:planmeout/util/todo_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,6 +24,16 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // new task creation
+  void createNewTask () {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const DialogBox();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,8 +50,9 @@ class _HomePageState extends State<HomePage> {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.add,)
+        backgroundColor: Colors.yellow,
+        onPressed: createNewTask,
+        child: const Icon(Icons.add),
       ),
 
       body: ListView.builder(
