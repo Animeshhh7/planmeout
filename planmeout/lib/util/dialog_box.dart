@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:planmeout/util/buttons.dart'; // Assuming Button widget is defined in buttons.dart
+import 'package:planmeout/util/buttons.dart'; 
 
 class DialogBox extends StatelessWidget {
-  const DialogBox({Key? key}) : super(key: key);
+  final TextEditingController controller;
+  final VoidCallback onSave;
+  final VoidCallback onCancel;
+
+  const DialogBox({
+    Key? key,
+    required this.controller,
+    required this.onSave,
+    required this.onCancel,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +29,9 @@ class DialogBox extends StatelessWidget {
           mainAxisSize: MainAxisSize.min, // Ensure the dialog size fits its content
           children: [
             // get user input
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: controller,
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: "Add a new plan",
               ),
@@ -31,12 +41,12 @@ class DialogBox extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                  // save button
-                  Button(text: "Save", onPressed: () {}), 
-                  const SizedBox(width: 8),
+                // save button
+                Button(text: "Save", onPressed: onSave),
+                const SizedBox(width: 8),
 
-                  // cancel button
-                  Button(text: "Cancel", onPressed: () {}), 
+                // cancel button
+                Button(text: "Cancel", onPressed: onCancel),
               ],
             )
           ],
