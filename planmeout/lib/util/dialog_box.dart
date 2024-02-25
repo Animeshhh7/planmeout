@@ -7,11 +7,11 @@ class DialogBox extends StatelessWidget {
   final VoidCallback onCancel;
 
   const DialogBox({
-    Key? key,
+    super.key,
     required this.controller,
     required this.onSave,
     required this.onCancel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

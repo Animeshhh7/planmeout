@@ -1,41 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:planmeout/data/database.dart';
 import 'package:planmeout/util/dialog_box.dart';
 import 'package:planmeout/util/todo_tile.dart';
-
-
-
+import 'package:timezone/timezone.dart' as tz;
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  ToDoDataBase db = ToDoDataBase();
+  final ToDoDataBase db = ToDoDataBase();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
-  // text controller
-  final _controller = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@drawable/timer_icon');
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
 
-  // checkbox was checked
   void checkBoxChanged(bool? value, int index) {
     setState(() {
       db.toDoList[index][1] = !db.toDoList[index][1];
     });
   }
 
-  // saving new task
   void saveNewTask() {
     setState(() {
-      db.toDoList.add([_controller.text, false]);
+      db.toDoList.add([_controller.text, false, null]);
       _controller.clear();
     });
     Navigator.of(context).pop();
   }
 
-  // new task creation
   void createNewTask() {
     showDialog(
       context: context,
@@ -49,11 +54,64 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // task deletion
   void deleteTask(int index) {
     setState(() {
       db.toDoList.removeAt(index);
     });
+  }
+
+  final TextEditingController _controller = TextEditingController();
+
+  Future<void> setTimerForTask(BuildContext context, List<dynamic> todo) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (picked != null) {
+      setState(() {
+        todo[2] = Duration(hours: picked.hour, minutes: picked.minute);
+      });
+
+      scheduleNotification(todo);
+    }
+  }
+
+  Future<void> scheduleNotification(List<dynamic> todo) async {
+    if (todo.length >= 3) {
+      const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+        'alert_notifications',
+        'Alert Notifications',
+        importance: Importance.max,
+        priority: Priority.high,
+        showWhen: false,
+        icon: '@drawable/timer.png', // Specify the resource name of the icon
+      );
+      const NotificationDetails platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+
+      final DateTime now = DateTime.now();
+      final DateTime scheduledDate = now.add(todo[2]);
+      final tz.TZDateTime scheduledDateTime = tz.TZDateTime.from(
+        scheduledDate,
+        tz.local,
+      );
+
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        'Task Reminder',
+        'Don\'t forget to complete ${todo[0]}!',
+        scheduledDateTime,
+        platformChannelSpecifics,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.time,
+        payload: 'customData',
+      );
+    } else {
+      // Handle the error gracefully (optional)
+    }
   }
 
   @override
@@ -82,9 +140,18 @@ class _HomePageState extends State<HomePage> {
             taskCompleted: db.toDoList[index][1],
             onChanged: (value) => checkBoxChanged(value, index),
             deleteFunction: (context) => deleteTask(index),
+            setTimerFunction: (context) =>
+                setTimerForTask(context, db.toDoList[index]),
           );
         },
       ),
     );
   }
+}
+
+void main() {
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: HomePage(),
+  ));
 }

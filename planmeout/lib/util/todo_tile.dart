@@ -6,21 +6,21 @@ class ToDoTile extends StatelessWidget {
   final bool taskCompleted;
   final void Function(bool)? onChanged;
   final void Function(BuildContext)? deleteFunction;
-  
+  final void Function(BuildContext)? setTimerFunction;
 
-  const ToDoTile({
-    Key? key,
+  const ToDoTile({super.key, 
+    Key? kkey,
     required this.taskName,
     required this.taskCompleted,
     required this.onChanged,
     required this.deleteFunction,
-    
-  }) : super(key: key);
+    required this.setTimerFunction,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left:25.0, right:25.0, top:25.0),
+      padding: const EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
       child: Slidable(
         endActionPane: ActionPane(
           motion: const StretchMotion(),
@@ -41,8 +41,10 @@ class ToDoTile extends StatelessWidget {
           ),
           child: Row(
             children: [
-              
-              // Checkbox
+              IconButton(
+                icon: const Icon(Icons.timer),
+                onPressed: () => setTimerFunction!(context),
+              ),
               Checkbox(
                 value: taskCompleted,
                 onChanged: onChanged != null
@@ -50,8 +52,6 @@ class ToDoTile extends StatelessWidget {
                     : null,
                 activeColor: Colors.black,
               ),
-        
-              // Task name with decoration
               Text(
                 taskName,
                 style: TextStyle(

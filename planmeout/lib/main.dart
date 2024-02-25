@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:planmeout/pages/home_page.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() async {
-  // initializing hive
+  // Initialize Hive for local data persistence
   await Hive.initFlutter();
+
+  // Initialize the local notifications plugin
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('app_icon');
+  const InitializationSettings initializationSettings =
+      InitializationSettings(android: initializationSettingsAndroid);
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
   runApp(const MyApp());
 }

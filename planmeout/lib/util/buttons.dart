@@ -5,10 +5,10 @@ class Button extends StatelessWidget {
   final VoidCallback onPressed;
 
   const Button({
-    Key? key, // specify key parameter
+    super.key, // specify key parameter
     required this.text,
     required this.onPressed,
-  }) : super(key: key); // Specify key parameter in super constructor
+  }); // Specify key parameter in super constructor
 
   @override
   Widget build(BuildContext context) {
