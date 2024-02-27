@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@drawable/timer_icon');
+        AndroidInitializationSettings('timer');
     const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
         importance: Importance.max,
         priority: Priority.high,
         showWhen: false,
-        icon: '@drawable/timer.png', // Specify the resource name of the icon
+        icon: 'timer', // Replace with your app icon's name in the assets folder
       );
       const NotificationDetails platformChannelSpecifics =
           NotificationDetails(android: androidPlatformChannelSpecifics);

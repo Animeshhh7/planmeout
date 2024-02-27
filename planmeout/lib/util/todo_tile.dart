@@ -8,8 +8,8 @@ class ToDoTile extends StatelessWidget {
   final void Function(BuildContext)? deleteFunction;
   final void Function(BuildContext)? setTimerFunction;
 
-  const ToDoTile({super.key, 
-    Key? kkey,
+  const ToDoTile({
+    super.key, 
     required this.taskName,
     required this.taskCompleted,
     required this.onChanged,
@@ -42,7 +42,7 @@ class ToDoTile extends StatelessWidget {
           child: Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.timer),
+                icon: const ImageIcon(AssetImage('assets/timer.png')), // Use the timer icon from assets
                 onPressed: () => setTimerFunction!(context),
               ),
               Checkbox(

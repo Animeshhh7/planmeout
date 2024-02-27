@@ -55,11 +55,12 @@ class TimerHandler {
         FlutterLocalNotificationsPlugin();
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'your channel id',
-      'your channel name',
+      'alert_notification', // Update with your channel ID
+      'Alert Notification', // Update with your channel name
       importance: Importance.max,
       priority: Priority.high,
       showWhen: false,
+      icon: 'timer.png', // Specify the resource name of the icon from the assets folder
     );
 
     const NotificationDetails platformChannelSpecifics =
